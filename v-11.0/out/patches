@@ -1,0 +1,42 @@
+#!/bin/bash
+
+# This file is sourced.
+# It requires apply_dir as first argument
+# or APPLY_DIR in the environment.
+
+RED='\033[0;31m'; GREEN='\033[0;32m'; NC='\033[0m'
+if [[ $# == 1 ]]; then apply_dir=${1}; else apply_dir=${APPLY_DIR}; fi
+rPatch () { eval "echo ${1} && curl ${1} | git apply --unsafe-paths --directory=${apply_dir} && echo"; }
+fPatch () { eval "echo ${1} && git apply --unsafe-paths --directory=${apply_dir} ${1} && echo"; }
+
+echo -e "\nApplying patches to ${apply_dir} ...\n"
+
+# odoo/netsvc.py - [PATCH] [IMP] netsvc: add json logging capa on non tty
+rPatch https://github.com/xoe-labs/odoo-dev/compare/11.0...xoe-labs:11.0-NOPR-add-json-logging-on-non-tty.patch
+
+# odoo/tools/config.py - [PATCH] [IMP] config: support bind-mounted admin secret
+rPatch https://github.com/xoe-labs/odoo-dev/compare/11.0...xoe-labs:11.0-NOPR-bind-mount-adminpwd-secret.patch
+
+# odoo/tools/config.py - [PATCH] [IMP] config: support config folders
+rPatch https://github.com/xoe-labs/odoo-dev/compare/11.0...xoe-labs:11.0-NOPR-support-config-folder.patch
+
+# odoo/service/db.py - [PATCH] [IMP] db: set default user tz through country code
+# rPatch https://patch-diff.githubusercontent.com/raw/odoo/odoo/pull/26365.patch
+rPatch https://github.com/xoe-labs/odoo-dev/compare/11.0...xoe-labs:11.0-db-set-user-timezone-to-country.patch
+
+# Underlying commits not backported yet, do so eventually when this feature matured...
+# odoo/tests/common.py - [PATCH] [FIX] tests: run chrome within containers
+# rPatch https://patch-diff.githubusercontent.com/raw/odoo/odoo/pull/26456.patch
+# rPatch https://github.com/xoe-labs/odoo-dev/compare/11.0...xoe-labs:11.0-fix-chrome-in-container-environment.patch
+
+# odoo/cli/scaffold.py - [PATCH] [IMP] scaffold: add json parameter to pass env
+# rPatch https://patch-diff.githubusercontent.com/raw/odoo/odoo/pull/26478.patch
+# rPatch https://github.com/xoe-labs/odoo-dev/compare/11.0...xoe-labs:11.0-add-json-option-to-scaffold.patch
+
+# odoo/cli/scaffold.py - [PATCH] [IMP] scaffold: add cli convenience dialogue
+# Incorporates:			 [PATCH] [IMP] scaffold: add json parameter to pass env
+rPatch https://github.com/xoe-labs/odoo-dev/compare/11.0...xoe-labs:11.0-NOPR-add-cli-dialogue-to-scaffolding.patch
+
+# odoo/cli/scaffold.py - [PATCH] [IMP] scaffold: config templates dir by env var
+# rPatch https://patch-diff.githubusercontent.com/raw/odoo/odoo/pull/26480.patch
+rPatch https://github.com/xoe-labs/odoo-dev/compare/11.0...xoe-labs:11.0-configurable-templates-dir.patch

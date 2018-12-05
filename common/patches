@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# This file is sourced.
+# It requires apply_dir as first argument
+# or APPLY_DIR in the environment.
+
+RED='\033[0;31m'; GREEN='\033[0;32m'; NC='\033[0m'
+if [[ $# == 1 ]]; then apply_dir=${1}; else apply_dir=${APPLY_DIR}; fi
+rPatch () { eval "echo ${1} && curl ${1} | git apply --unsafe-paths --directory=${apply_dir} && echo"; }
+fPatch () { eval "echo ${1} && git apply --unsafe-paths --directory=${apply_dir} ${1} && echo"; }
+
+echo -e "\nApplying patches to ${apply_dir} ...\n"
+
