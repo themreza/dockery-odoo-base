@@ -20,7 +20,7 @@ addonspath=""
 # Sort reverse alfanumerically first, then do realpath
 # so we can freely reorder loading by symlinking for
 # exemple in a CI environment directly from a git clone.
-for dir in $(find "${ODOO_ADDONS_BASEPATH}" -maxdepth 1 -mindepth 1 -xtype d | sort -r | xargs realpath); do
+for dir in $(find "${ODOO_ADDONS_BASEPATH}" -maxdepth 1 -mindepth 1 -xtype d | sort -r | xargs realpath --no-symlinks); do
 
 	# Prevent loading enterprise addons folder if switched on
 	if [[ $ODOO_ENTERPRISE != 'yes' ]] && [[ $dir == "${ODOO_ADDONS_BASEPATH}"/001 ]]; then
