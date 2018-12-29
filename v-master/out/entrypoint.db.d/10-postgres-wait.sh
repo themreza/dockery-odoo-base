@@ -16,14 +16,10 @@ set -Eeuo pipefail
 	if [ "$files" ]; then
 		PGPASSWORD=$(awk -F "=" '/db_password/ {print $2}' ${files[-1]} | tr -d ' '); fi
 
-# Write out to ~/.pgpass
-	echo "${PGHOST:-db}:${PGPORT:-5432}:*:${PGUSER}:${PGPASSWORD}" > ~/.pgpass
-	chmod 600 ~/.pgpass
-
 
 RETRIES=5
 
-until psql -h $PGHOST -U $PGUSER -d $PGUSER -c "select 1" > /dev/null 2>&1 || [ $RETRIES -eq 0 ]; do
+until export PGPASSWORD; psql -h $PGHOST -U $PGUSER -d "postgres" -c "select 1" > /dev/null 2>&1 || [ $RETRIES -eq 0 ]; do
   echo "Waiting for postgres server, $((RETRIES--)) remaining attempts..."
   sleep 1
 done

@@ -8,13 +8,15 @@ set -Eeuo pipefail
 
 
 # Runtime Env shadowing
-export ODOO_PASSFILE="${ODOO_PASSFILE:=/run/secrets/adminpwd}"  # Odoo Passfile (Patch tools/0002)
-
-export              ODOO_RC="${ODOO_BASEPATH}/cfg.d"  # Bind-mount a folder (Patch tools/0001)
-export             ODOO_MIG="${ODOO_BASEPATH}/migration.yaml"
-export             ODOO_CMD="${ODOO_BASEPATH}/odoo-bin"
-export             ODOO_FRM="${ODOO_BASEPATH}/odoo"
-export ODOO_ADDONS_BASEPATH="${ODOO_BASEPATH}/addons"
+# Use a double fallback:
+# 1. Use pre-initialization env variables (eg. deployment or built time env)
+# 2. Use defaults, eg. for CI/CD execution outside of a continerized environment
+export        ODOO_PASSFILE="${ODOO_PASSFILE:=/run/secrets/adminpwd}"  # Odoo Passfile (Patch tools/0002)
+export              ODOO_RC="${ODOO_RC:=${ODOO_BASEPATH}/cfg.d}"  # Bind-mount a folder (Patch tools/0001)
+export             ODOO_MIG="${ODOO_MIG:=${ODOO_BASEPATH}/migration.yaml}"
+export             ODOO_CMD="${ODOO_CMD:=${ODOO_BASEPATH}/odoo-bin}"
+export             ODOO_FRM="${ODOO_FRM:=${ODOO_BASEPATH}/odoo}"
+export ODOO_ADDONS_BASEPATH="${ODOO_ADDONS_BASEPATH:=${ODOO_BASEPATH}/addons}"
 
 addonspath=""
 # Sort reverse alfanumerically first, then do realpath
