@@ -1,42 +1,78 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # This file is sourced.
-# It requires apply_dir as first argument
-# or APPLY_DIR in the environment.
+# It requires base_path as first argument
+# or ODOO_BASEPATH in the environment.
 
 RED='\033[0;31m'; GREEN='\033[0;32m'; NC='\033[0m'
-if [[ $# == 1 ]]; then apply_dir=${1}; else apply_dir=${APPLY_DIR}; fi
-rPatch () { eval "echo ${1} && curl ${1} | git apply --unsafe-paths --directory=${apply_dir} && echo"; }
-fPatch () { eval "echo ${1} && git apply --unsafe-paths --directory=${apply_dir} ${1} && echo"; }
 
-echo -e "\nApplying patches to ${apply_dir} ...\n"
+if [[ $# == 2 ]]; then 
+    base_path=${1}
+    patches_dir=${2}
+else 
+    base_path=${ODOO_BASEPATH}
+    patches_dir="${PATCHES_DIR}"
+fi
 
-# odoo/netsvc.py - [PATCH] [IMP] netsvc: add json logging capa on non tty
-rPatch https://github.com/xoe-labs/odoo-dev/compare/10.0...xoe-labs:10.0-NOPR-add-json-logging-on-non-tty.patch
+rPatch () { 
+    echo -e "${GREEN}${1}${NC} <- ${2}"
+    eval "curl ${2} | git apply --unsafe-paths --directory=${1} && echo"; 
+}
+fPatch () { 
+    echo -e "${GREEN}${1}${NC} <- ${2}"
+    eval "git apply --unsafe-paths --directory=${1} ${2} && echo";
+}
 
-# odoo/tools/config.py - [PATCH] [IMP] config: support bind-mounted admin secret
-rPatch https://github.com/xoe-labs/odoo-dev/compare/10.0...xoe-labs:10.0-NOPR-bind-mount-adminpwd-secret.patch
+echo -e "\nApplying patches to ${base_path} ..."
 
-# odoo/tools/config.py - [PATCH] [IMP] config: support config folders
-rPatch https://github.com/xoe-labs/odoo-dev/compare/10.0...xoe-labs:10.0-NOPR-support-config-folder.patch
 
-# odoo/service/db.py - [PATCH] [IMP] db: set default user tz through country code
-# rPatch https://patch-diff.githubusercontent.com/raw/odoo/odoo/pull/26365.patch
-rPatch https://github.com/xoe-labs/odoo-dev/compare/10.0...xoe-labs:10.0-db-set-user-timezone-to-country.patch
+function apply_patches_in() {
+    # Change windows style to linux style
+    fn=${2//\'/}
 
-# Underlying commits not backported yet, do so eventually when this feature matured...
-# odoo/tests/common.py - [PATCH] [FIX] tests: run chrome within containers
-# rPatch https://patch-diff.githubusercontent.com/raw/odoo/odoo/pull/26456.patch
-# rPatch https://github.com/xoe-labs/odoo-dev/compare/10.0...xoe-labs:10.0-fix-chrome-in-container-environment.patch
+    # Is it a file at all?
+    if [[ -f $fn ]]; then
 
-# odoo/cli/scaffold.py - [PATCH] [IMP] scaffold: add json parameter to pass env
-# rPatch https://patch-diff.githubusercontent.com/raw/odoo/odoo/pull/26478.patch
-# rPatch https://github.com/xoe-labs/odoo-dev/compare/10.0...xoe-labs:10.0-add-json-option-to-scaffold.patch
+        # Verify RELBASE specification in first line (must be first line)
+        read -r firstline < "$fn"
+        echo -e "File: ${fn}\n"
 
-# odoo/cli/scaffold.py - [PATCH] [IMP] scaffold: add cli convenience dialogue
-# Incorporates:			 [PATCH] [IMP] scaffold: add json parameter to pass env
-rPatch https://github.com/xoe-labs/odoo-dev/compare/10.0...xoe-labs:10.0-NOPR-add-cli-dialogue-to-scaffolding.patch
+        if [ "${fn##*.}" != "patch" ] && [ "${fn##*.}" != "url" ]; then
+            echo -e "${RED}Patch files must end in '*.url' or '*.patch'.${NC}"
+        fi
 
-# odoo/cli/scaffold.py - [PATCH] [IMP] scaffold: config templates dir by env var
-# rPatch https://patch-diff.githubusercontent.com/raw/odoo/odoo/pull/26480.patch
-rPatch https://github.com/xoe-labs/odoo-dev/compare/10.0...xoe-labs:10.0-configurable-templates-dir.patch
+        if [ "${firstline:0:8}" != 'RELBASE:' ]; then
+            echo -e "${RED}First line MUST specify string 'RELBASE: *'${NC}\n"
+            exit 1
+        else
+            dir="${firstline##RELBASE:}"
+            dir=$(echo "${dir}" | xargs)  # Strip whitespaces
+            dir="${base_path}/${dir}"
+        fi
+
+        # If it's an .url file with one or m more urls in it.
+        if [ "${fn##*.}" == "url" ]; then
+            regex='(https?|ftp|file)://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]'
+            while IFS='' read -r line || [[ -n "$line" ]];
+                do
+                    [ -z "$line" ] && continue # skip empty line
+                    [ "${line:0:1}" = '#' ]  && continue # skip commented line
+                    if [[ $line =~ $regex ]]; then
+                        rPatch "${dir}" "${line}"
+                    fi
+                done < "$fn"
+        elif [ "${fn##*.}" == "patch" ]; then
+            fPatch "${dir}" "${fn}"
+        fi
+
+    else
+        echo -e "\n${RED}File not found: $fn${NC}"
+    fi
+}
+
+
+for fn in $(find "${patches_dir}" -maxdepth 1 -mindepth 1 -xtype f | sort | xargs realpath --no-symlinks);
+do
+    :
+    apply_patches_in "${base_path}" "${fn}"
+done

@@ -52,8 +52,8 @@ ${LYELLOW}| App Cmd:          ${ODOO_CMD}${NC}
 ${LYELLOW}| Framework Path:   ${ODOO_FRM}${NC}
 ${LYELLOW}| Backup Dir:       ${ODOO_BCKP_DIR}${NC}
 ${LYELLOW}| Peristence Dir:   ${ODOO_PRST_DIR}${NC}
-${LYELLOW}| Addons Basepath:  ${ODOO_ADDONS_BASEPATH}${NC}
-${LYELLOW}| Addons Path:      ${ODOO_ADDONS_PATH//"${ODOO_ADDONS_BASEPATH}/"}${NC}
+${LYELLOW}| Addons Basepath:  ${ODOO_VENDOR}${NC}
+${LYELLOW}| Addons Path:      ${ODOO_ADDONS_PATH//"${ODOO_BASEPATH}/"}${NC}
 ${LYELLOW}| Migration Spec:   ${ODOO_MIG}${NC}
 ${LYELLOW}| Config Folder:    ${ODOO_RC}${NC}
 ${LYELLOW}| -------------------------------- Environment${NC}

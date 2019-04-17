@@ -31,12 +31,6 @@ ENV WKHTMLTOPDF_CHECKSUM 1140b0ab02aa6e17346af2f14ed0de807376de475ba90e1db3975f1
 ENV NODE_VERSION         6
 
 # Build-time env
-ENV ODOO_BASEPATH        "/opt/odoo"
-ENV ODOO_RC              "${ODOO_BASEPATH}/cfg.d"
-ENV ODOO_MIG             "${ODOO_BASEPATH}/migration.yaml"
-ENV ODOO_CMD             "${ODOO_BASEPATH}/odoo-bin"
-ENV ODOO_FRM             "${ODOO_BASEPATH}/odoo"
-ENV ODOO_ADDONS_BASEPATH "${ODOO_BASEPATH}/addons"
 ENV ODOO_BCKP_DIR        "/var/lib/odoo-backups"
 ENV ODOO_PRST_DIR        "/var/lib/odoo-persist"
 ENV APP_UID              "9001"
@@ -155,6 +149,7 @@ RUN adduser --system --uid $APP_GID --ingroup odoo --home /opt/odoo --disabled-l
 COPY entrypoint* /
 COPY entrypoint.d /entrypoint.d
 COPY entrypoint.db.d /entrypoint.db.d
+COPY patches.d /patches.d
 COPY patches /patches
 
 # Own folders                //-- where pure bind mounting during dev in docker-compose doesn't yield correct file permissions

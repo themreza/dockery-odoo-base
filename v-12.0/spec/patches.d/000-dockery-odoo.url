@@ -1,0 +1,27 @@
+RELBASE: ./vendor/odoo/cc
+
+
+odoo/netsvc.py - [PATCH] [IMP] netsvc: add json logging capa on non tty
+https://github.com/xoe-labs/odoo-dev/compare/12.0...xoe-labs:12.0-BACKPORT--NOPR-add-json-logging-on-non-tty.patch
+
+# odoo/tools/config.py - [PATCH] [IMP] config: support bind-mounted admin secret
+https://github.com/xoe-labs/odoo-dev/compare/12.0...xoe-labs:12.0-BACKPORT--NOPR-bind-mount-adminpwd-secret.patch
+
+# odoo/tools/config.py - [PATCH] [IMP] config: support config folders
+https://github.com/xoe-labs/odoo-dev/compare/12.0...xoe-labs:12.0-BACKPORT--NOPR-support-config-folder.patch
+
+# odoo/service/db.py - [PATCH] [IMP] db: set default user tz through country code
+https://patch-diff.githubusercontent.com/raw/odoo/odoo/pull/26365.patch
+
+# odoo/tests/common.py - [PATCH] [FIX] tests: run chrome within containers
+https://patch-diff.githubusercontent.com/raw/odoo/odoo/pull/26456.patch
+
+# odoo/cli/scaffold.py - [PATCH] [IMP] scaffold: add json parameter to pass env
+# https://patch-diff.githubusercontent.com/raw/odoo/odoo/pull/26478.patch
+
+# odoo/cli/scaffold.py - [PATCH] [IMP] scaffold: add cli convenience dialogue
+# Incorporates:			 [PATCH] [IMP] scaffold: add json parameter to pass env
+https://github.com/xoe-labs/odoo-dev/compare/12.0...xoe-labs:12.0-BACKPORT--NOPR-add-cli-dialogue-to-scaffolding.patch
+
+# odoo/cli/scaffold.py - [PATCH] [IMP] scaffold: config templates dir by env var
+https://patch-diff.githubusercontent.com/raw/odoo/odoo/pull/26480.patch

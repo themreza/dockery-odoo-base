@@ -13,10 +13,13 @@ for path in $(find "${DIR}" -maxdepth 1 -type d -name 'v-*') ; do
 	name=$(basename "${path}")
 	version=${name#"v-"}
 	shopt -s extglob
+	rm -rf "${path}/out/"
+	mkdir -p "${path}/out/"
 	cp -rp "${DIR}"/common/* "${path}/out/"
 	cp -rp "${path}"/spec/*  "${path}/out/"
-	find "${path}/out/" -name "__*" -type f -exec rm {} \+
-	cat "$path/spec/__patches" >> "$path/out/patches"
-	cat "${DIR}"/common/__Dockerfile >> "$path/out/Dockerfile"
+	for tmpl in $(find "${path}/out/" -name "Dockerfile.*.tmpl" -xtype f | sort | xargs realpath --no-symlinks); do
+		cat ${tmpl} >> "${path}/out/Dockerfile"
+		rm -f "${tmpl}"
+	done
 	curl "https://raw.githubusercontent.com/odoo/odoo/${version}/requirements.txt" -o "${DIR}/${name}/out/requirements.txt"
 done
