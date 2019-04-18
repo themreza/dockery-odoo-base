@@ -17,7 +17,6 @@ RUN adduser --system --uid $APP_GID --ingroup odoo --home /opt/odoo --disabled-l
 COPY entrypoint* /
 COPY entrypoint.d /entrypoint.d
 COPY entrypoint.db.d /entrypoint.db.d
-COPY patches.d /patches.d
 COPY patches /patches
 
 # Own folders                //-- where pure bind mounting during dev in docker-compose doesn't yield correct file permissions
