@@ -13,7 +13,7 @@ addonspath="${ODOO_SRC}"
 # so we can freely reorder loading by symlinking for
 # exemple in a CI environment directly from a git clone.
 
-for dir in $(find "${ODOO_VENDOR}" -maxdepth 5 -exec test -e {}/__manifest__.py -o -e {}/__openerp__.py \; -exec dirname {} \; | uniq -d | sort | xargs realpath --no-symlinks); do
+for dir in $(find "${ODOO_VENDOR}" -maxdepth 5 -exec test -e {}/__manifest__.py -o -e {}/__openerp__.py \; -exec dirname {} \; | uniq | sort | xargs realpath --no-symlinks); do
 
     echo "==>  Adding $dir to addons path"
     addonspath=$addonspath,$dir
