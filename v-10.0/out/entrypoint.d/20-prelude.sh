@@ -61,7 +61,7 @@ ${LYELLOW}| App UID:          ${APP_UID}${NC}
 ${LYELLOW}| App GID:          ${APP_GID}${NC}
 ${LYELLOW}| Current UID:      $(id -u)${NC}
 ${LYELLOW}| Current GID:      $(id -g)${NC}
-${LYELLOW}| Serverpwd:        $(cat "${ODOO_PASSFILE:="."}" || true)${NC}
+${LYELLOW}| Serverpwd:        $(cat "${ODOO_ADMINPASSWORD_FILE:="."}" || true)${NC}
 ${LYELLOW}==============================================${NC}
 
 
