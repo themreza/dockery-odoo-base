@@ -33,6 +33,7 @@ function apply_patches_in() {
     # Is it a file at all?
     if [[ -f $fn ]]; then
         [ "${fn##*.}" == "empty" ] && return # skip git keep file
+        [ "${fn##*.}" == "gitkeep" ] && return # skip git keep file
 
         # Verify RELBASE specification in first line (must be first line)
         read -r firstline < "$fn"
