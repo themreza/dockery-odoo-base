@@ -13,7 +13,38 @@ addonspath=""
 # so we can freely reorder loading by symlinking for
 # exemple in a CI environment directly from a git clone.
 
-for dir in $(find "${ODOO_SRC}" -maxdepth 3 -exec test -e {}/__manifest__.py -o -e {}/__openerp__.py \; -exec dirname {} \; | uniq | sort | xargs realpath --no-symlinks); do
+get_addons () {
+
+python 2>&1 >/dev/null - <<END
+#!/usr/bin/env python
+import ast
+import os
+import sys
+
+
+MANIFEST_NAMES = ["__manifest__.py", "__odoo__.py", "__openerp__.py", "__terp__.py"]
+SKIP_PATHS = ["point_of_sale/tools", "base_import_module/tests"]
+
+def main():
+    """ yield (addon_name, addon_dir, manifest) """
+    paths = set()
+    for root, _, files in os.walk("$1"):
+        if any(S in root for S in SKIP_PATHS):
+            continue
+        if not any(M in files for M in MANIFEST_NAMES):
+            continue
+        paths |= set([os.path.dirname(root)])
+    paths = sorted(list(paths))  # We promise alphabetical order
+    return ' '.join(paths)
+
+
+if __name__ == "__main__":
+    sys.exit(main())
+END
+}
+
+
+for dir in $(get_addons ${ODOO_SRC}); do
     echo "==>  Adding $dir to addons path"
     if [ -z "$addonspath" ]; then
         addonspath=$dir
@@ -22,7 +53,7 @@ for dir in $(find "${ODOO_SRC}" -maxdepth 3 -exec test -e {}/__manifest__.py -o 
     fi;
 done;
 
-for dir in $(find "${ODOO_VENDOR}" -maxdepth 5 -exec test -e {}/__manifest__.py -o -e {}/__openerp__.py \; -exec dirname {} \; | uniq | sort | xargs realpath --no-symlinks); do
+for dir in $(get_addons ${ODOO_VENDOR}); do
 
     echo "==>  Adding $dir to addons path"
     if [ -z "$addonspath" ]; then
