@@ -17,7 +17,6 @@ get_addons () {
 
 python 2>&1 >/dev/null - <<END
 #!/usr/bin/env python
-import ast
 import os
 import sys
 
