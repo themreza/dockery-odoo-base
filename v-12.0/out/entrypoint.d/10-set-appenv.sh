@@ -25,16 +25,20 @@ MANIFEST_NAMES = ["__manifest__.py", "__odoo__.py", "__openerp__.py", "__terp__.
 SKIP_PATHS = ["point_of_sale/tools", "base_import_module/tests"]
 
 def main():
-    """ yield (addon_name, addon_dir, manifest) """
-    paths = set()
-    for root, _, files in os.walk("$1"):
-        if any(S in root for S in SKIP_PATHS):
-            continue
-        if not any(M in files for M in MANIFEST_NAMES):
-            continue
-        paths |= set([os.path.dirname(root)])
-    paths = sorted(list(paths))  # We promise alphabetical order
-    return ' '.join(paths)
+    # Input in the form of an array of folders (layered image)
+    inputs = sorted("$@".split())
+    res = []
+    for input in inputs:
+        paths = set()
+        for root, _, files in os.walk(input):
+            if any(S in root for S in SKIP_PATHS):
+                continue
+            if not any(M in files for M in MANIFEST_NAMES):
+                continue
+            paths |= set([os.path.dirname(root)])
+        paths = sorted(list(paths))  # We promise alphabetical order
+        res.extend(paths)
+    return ' '.join(res)
 
 
 if __name__ == "__main__":
