@@ -19,9 +19,6 @@ set -u
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 
-
-source "${DIR}"/gen_contexts.sh
-
 for path in $(find "${DIR}" -maxdepth 1 -type d -name 'v-*') ; do
 	name=$(basename "${path}")
 	version=${name#"v-"}
