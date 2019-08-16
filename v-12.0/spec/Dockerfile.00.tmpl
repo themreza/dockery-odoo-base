@@ -18,7 +18,7 @@ RUN apt-get -qq update && apt-get -qq install -y \
 # -----------------
 # Multi-stage build
 # -----------------
-FROM debian:stretch AS base-build
+FROM python:3.7-stretch AS base-build
 
 USER root
 
@@ -42,7 +42,6 @@ RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends \
     bzip2 \
     curl \
     libgeoip-dev \
-    python3-dev \
     wget \
     xz-utils \
     libevent-dev \
@@ -66,7 +65,6 @@ RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends \
 
 # Grab run deps
 RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends \
-    python3 \
     apt-transport-https \
     ca-certificates \
     gnupg2 \
@@ -88,10 +86,6 @@ RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends \
     zlib1g \
     zlibc \
     > /dev/null
-
-
-# Grab latest pip
-RUN curl --silent --show-error --location https://bootstrap.pypa.io/get-pip.py | python3 /dev/stdin --no-cache-dir
 
 # Grab latest git            //-- to `pip install` customized python packages & apply patches
 RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends git-core > /dev/null
