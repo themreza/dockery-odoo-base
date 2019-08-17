@@ -34,6 +34,7 @@ RUN set -ex; \
         node-less \
         locales \
         fontconfig \
+        lbzip2 \
         libfreetype6 \
         libjpeg62-turbo \
         liblcms2-2 \
