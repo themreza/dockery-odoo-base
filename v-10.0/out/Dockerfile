@@ -1,4 +1,4 @@
-FROM debian:jessie AS base-build
+FROM debian:jessie-slim AS base-build
 
 USER root
 
@@ -119,21 +119,39 @@ RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends \
 
 
 # Grab latest geoip DB       //-- to enable IP based geo-referncing
-RUN wget --quiet http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz -O /tmp/GeoLite2-City.tar.gz \
-    && mkdir -p /usr/share/GeoIP \
-    && tar -xf /tmp/GeoLite2-City.tar.gz -C /tmp/ \
-    && find /tmp/GeoLite2-City_* | grep "GeoLite2-City.mmdb" | xargs -I{} mv {} /usr/share/GeoIP/GeoLite2-City.mmdb \
-    && pip --quiet --quiet install geoip2
+RUN set -ex; \
+    \
+    savedAptMark="$(apt-mark showmanual)"; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends wget; \
+    \
+    wget --quiet http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz -O /tmp/GeoLite2-City.tar.gz; \
+    mkdir -p /usr/share/GeoIP; \
+    tar -xf /tmp/GeoLite2-City.tar.gz -C /tmp/; \
+    find /tmp/GeoLite2-City_* | grep "GeoLite2-City.mmdb" | xargs -I{} mv {} /usr/share/GeoIP/GeoLite2-City.mmdb; \
+    rm -rf /tmp/*; \
+    pip --quiet --quiet install geoip2; \
+    \
+    apt-mark auto '.*' > /dev/null; \
+    [ -z "$savedAptMark" ] || apt-mark manual $savedAptMark; \
+    apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
+    rm -rf /var/lib/apt/lists/*;
 
 # Grab latest json logger    //-- for easier parsing (Patch 0001)
-RUN pip --quiet --quiet install python-json-logger
+RUN pip --quiet --quiet install python-json-logger; \
+	find /usr/local -depth \
+		\( \
+			\( -type d -a \( -name test -o -name tests \) \) \
+			-o \
+			\( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
+		\) -exec rm -rf '{}' +;
 
 # Create app user
 RUN addgroup --system --gid $APP_UID odoo
 RUN adduser --system --uid $APP_GID --ingroup odoo --home /opt/odoo --disabled-login --shell /sbin/nologin odoo
 
 # Copy from build env
-COPY entrypoint* /
+COPY entrypoint.sh /
 COPY entrypoint.d /entrypoint.d
 COPY entrypoint.db.d /entrypoint.db.d
 COPY patches /patches
@@ -156,7 +174,6 @@ ENV LC_ALL en_US.UTF-8
 RUN /bin/bash -c 'shopt -s dotglob \
  && chmod +x /patches \
  && chmod +x /entrypoint.sh \
- && chmod +x /usr/local/bin/* \
  && chmod +x /entrypoint.d/* \
  && chmod +x /entrypoint.db.d/* \
  && shopt -u dotglob'
