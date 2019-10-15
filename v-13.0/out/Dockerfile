@@ -104,7 +104,7 @@ ENV ODOO_BCKP_DIR="/var/lib/odoo-backups" \
     ODOO_PRST_DIR="/var/lib/odoo-persist" \
     APP_UID="9001" \
     APP_GID="9001" \
-    ODOO_VERSION=master
+    ODOO_VERSION=13.0
 
 
 # Grab & build required python packages
