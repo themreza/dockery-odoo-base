@@ -52,6 +52,8 @@ RUN set -ex; \
         zlibc \
         # Grab latest git to `pip install` customized python packages & apply patches
         git-core \
+        # Apply remote patches
+        curl \
         \
         # For wkhtmltox
         libpng16-16 libssl1.1 xfonts-75dpi xfonts-base; \
@@ -102,7 +104,7 @@ ENV ODOO_BCKP_DIR="/var/lib/odoo-backups" \
     ODOO_PRST_DIR="/var/lib/odoo-persist" \
     APP_UID="9001" \
     APP_GID="9001" \
-    ODOO_VERSION=master
+    ODOO_VERSION=13.0
 
 
 # Grab & build required python packages

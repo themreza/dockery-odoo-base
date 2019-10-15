@@ -52,6 +52,8 @@ RUN set -ex; \
         zlibc \
         # Grab latest git to `pip install` customized python packages & apply patches
         git-core \
+        # Apply remote patches
+        curl \
         \
         # For wkhtmltox
         libpng16-16 libssl1.1 xfonts-75dpi xfonts-base; \
