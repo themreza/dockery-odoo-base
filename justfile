@@ -1,5 +1,6 @@
 # use with https://github.com/casey/just
 
+IMAGE := "odooops/dockery-odoo-base"
 
 # generate dockerfiles
 generate:
@@ -36,12 +37,12 @@ generate:
 
 
 
-# generate dockerfile & build images
-build IMAGE="odooops/dockery-odoo-base": generate
+# generate dockerfiles & build images
+build: generate
 	#!/bin/bash
 
 	# Generates base images per version.
-	# Walkes folders matching 'v*' and builds their respective docker context.
+	# Walkes `docker` folder and builds respective docker context.
 
 	set -Eeuo pipefail
 
@@ -52,11 +53,11 @@ build IMAGE="odooops/dockery-odoo-base": generate
 
 
 # generate dockeriles, build & push images
-push IMAGE="odooops/dockery-odoo-base": build
+push: build
 	#!/bin/bash
 
 	# Pushes base images per version.
-	# Walkes folders matching 'v*' and pushes the respective verion.
+	# Detects versions from `docker` folder and pushes.
 
 	set -Eeuo pipefail
 
