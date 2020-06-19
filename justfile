@@ -11,25 +11,29 @@ generate:
 
 	set -Eeuo pipefail
 
-	for path in $(find "$(pwd)" -maxdepth 1 -type d -name 'v-*') ; do
+	commonfolder="_spec-common"
+
+	for path in $(find . -maxdepth 1 -type d -name '_spec-v-*' | grep 'v-....$\|v-master$' | sort) ; do
 		name=$(basename "${path}")
-		version=${name#"v-"}
+		version=${name#"_spec-v-"}
+		target="docker/${version}"
 		shopt -s extglob
-		echo -e "Cleanup ${version} target..."
-		rm -rf "${path}/out/"
-		mkdir -p "${path}/out/"
-		echo -e "Copy to ${version} target..."
-		cp -rp "$(pwd)"/common/* "${path}/out/"
-		cp -rp "${path}"/spec/*  "${path}/out/"
-		echo -e "Build ${version} Dockerfile from templates..."
-		for tmpl in $(find "${path}/out/" -name "Dockerfile.*.tmpl" -xtype f | sort | xargs realpath --no-symlinks); do
-			cat ${tmpl} >> "${path}/out/Dockerfile"
+		echo -e "Regenerating output files for verion ${version}..."
+		rm -rf "${target}"
+		mkdir -p "${target}"
+
+		echo -e "    Generating dockerfiles for variant..."
+		cp -rp ${commonfolder}/*          "${target}"
+		cp -rp "${path}"/*                "${target}"
+
+		for tmpl in $(find "${target}" -name "Dockerfile.*.tmpl" -xtype f | sort | xargs realpath --no-symlinks); do
+			cat ${tmpl} >> "${target}/Dockerfile"
 			rm -f "${tmpl}"
 		done
-		echo -e "Fetch ${version} latest requirements.txt..."
-		curl "https://raw.githubusercontent.com/odoo/odoo/${version}/requirements.txt" -o "$(pwd)/${name}/out/requirements.txt"
-		echo -e "\n"
+
+		echo -e "\033[00;32mFiles for verion ${version} generated.\033[0m\n"
 	done
+
 
 
 # generate dockerfile & build images
