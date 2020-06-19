@@ -170,26 +170,6 @@ RUN set -ex; \
 COPY --from=pyflame-build /pyflame/src/pyflame /usr/local/bin/
 RUN chmod +x /usr/local/bin/pyflame
 
-# Grab latest geoip DB       //-- to enable IP based geo-referncing
-# Size: ca. 73MB
-RUN set -ex; \
-    \
-    savedAptMark="$(apt-mark showmanual)"; \
-    apt-get update; \
-    apt-get install -y --no-install-recommends wget; \
-    \
-    wget --quiet http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz -O /tmp/GeoLite2-City.tar.gz; \
-    mkdir -p /usr/share/GeoIP; \
-    tar -xf /tmp/GeoLite2-City.tar.gz -C /tmp/; \
-    find /tmp/GeoLite2-City_* | grep "GeoLite2-City.mmdb" | xargs -I{} mv {} /usr/share/GeoIP/GeoLite2-City.mmdb; \
-    rm -rf /tmp/*; \
-    pip --quiet --quiet install --no-cache-dir geoip2; \
-    \
-    apt-mark auto '.*' > /dev/null; \
-    [ -z "$savedAptMark" ] || apt-mark manual $savedAptMark; \
-    apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
-    rm -rf /var/lib/apt/lists/*;
-
 # Copy from build env
 COPY . /
 RUN /bin/bash -c 'shopt -s dotglob \
