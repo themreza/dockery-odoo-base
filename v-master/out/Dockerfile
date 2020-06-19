@@ -181,7 +181,6 @@ RUN set -ex; \
 # Copy from build env
 COPY . /
 RUN /bin/bash -c 'shopt -s dotglob \
- && chmod +x /patches \
  && chmod +x /entrypoint.sh \
  && chmod +x /entrypoint.d/* \
  && chmod +x /entrypoint.db.d/* \

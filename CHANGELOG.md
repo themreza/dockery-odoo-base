@@ -1,5 +1,9 @@
 Changes
 =======
+2.0.0-rc1   (2020-06-18)
+------------------------
+- move patch machinery downstream
+
 2.0.0-rc0   (2020-06-18)
 ------------------------
 - use `justfile` as task runner

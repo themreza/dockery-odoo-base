@@ -15,10 +15,6 @@ file a PR.
 - Postgres connection waiter loop (so startup doesn't fail)
 - `get_addons` auto-addons path (making your module dev a little more agile)
 - Tiny pyflame binary for live profiling (1.5MB)
-- Automatically apply patches from `patch.d` on startup:
-    + Local, project-specific patches
-    + Remote patches rendered on a given URL (from your supported git hosting
-      service - tested on github)
 - TODO: Rewrire `scaffold` subcommand to a mr.bob implementation, if configured
 
 ## Environment Convention
@@ -45,7 +41,6 @@ You still can impersonate a different user, e.g. your host's user with docker `-
 
 This is the env contract you must fulfill in your projects.
 
-- `ODOO_BASEPATH` -> base dir for patches (patches work on relative paths)
 - `ODOO_CMD` -> the odoo server executable (usually `odoo-bin`)
 - `ODOO_FRM` -> the odoo framework path (`odoo` subdir of the odoo repo)
 - `ODOO_RC` -> path to the configuration file

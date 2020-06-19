@@ -52,7 +52,6 @@ ${LYELLOW}| WkhtmltoX:        ${WKHTMLTOX_MINOR:=${WKHTMLTOX_VERSION}}${NC}
 ${LYELLOW}| Node:             ${NODE_VERSION:="n/a"}${NC}
 ${LYELLOW}| Bootstrap:        ${BOOTSTRAP_VERSION:="n/a"}${NC}
 ${LYELLOW}| ---------------------------- Files & Folders${NC}
-${LYELLOW}| App Basepath:     ${ODOO_BASEPATH}${NC}
 ${LYELLOW}| App Cmd:          ${ODOO_CMD}${NC}
 ${LYELLOW}| Framework Path:   ${ODOO_FRM}${NC}
 ${LYELLOW}| Peristence Dir:   ${ODOO_PRST_DIR}${NC}
