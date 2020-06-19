@@ -19,11 +19,11 @@ generate:
 		version=${name#"_spec-v-"}
 		target="docker/${version}"
 		shopt -s extglob
-		echo -e "Regenerating output files for verion ${version}..."
+		echo -e "Regenerating version ${version}..."
 		rm -rf "${target}"
 		mkdir -p "${target}"
 
-		echo -e "    Generating dockerfiles for variant..."
+		echo -e "    Generating dockerfiles..."
 		cp -rp ${commonfolder}/*          "${target}"
 		cp -rp "${path}"/*                "${target}"
 
@@ -31,6 +31,10 @@ generate:
 			cat ${tmpl} >> "${target}/Dockerfile"
 			rm -f "${tmpl}"
 		done
+
+		echo -e "    Fetch latest requirements.txt...\n"
+		curl "https://raw.githubusercontent.com/odoo/odoo/${version}/requirements.txt" -o "${target}/requirements.txt"
+		echo -e "\n"
 
 		echo -e "\033[00;32mFiles for verion ${version} generated.\033[0m\n"
 	done
