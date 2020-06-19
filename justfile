@@ -45,10 +45,9 @@ build IMAGE="odooops/dockery-odoo-base": generate
 
 	set -Eeuo pipefail
 
-	for path in $(find "$(pwd)" -maxdepth 1 -type d -name 'v-*') ; do
-		name=$(basename "${path}")
-		version=${name#"v-"}
-		docker build --tag "{{ IMAGE }}:${version}" "${name}/out"
+	for path in $(find docker -maxdepth 1 -mindepth 1 -type d | sort) ; do
+		version=$(basename "${path}")
+		docker build --tag "{{ IMAGE }}:${version}" "docker/${version}"
 	done
 
 
@@ -61,8 +60,7 @@ push IMAGE="odooops/dockery-odoo-base": build
 
 	set -Eeuo pipefail
 
-	for path in $(find "$(pwd)" -maxdepth 1 -type d -name 'v-*') ; do
-		name=$(basename "${path}")
-		version=${name#"v-"}
+	for path in $(find docker -maxdepth 1 -mindepth 1 -type d | sort) ; do
+		version=$(basename "${path}")
 		docker push "{{ IMAGE }}:${version}"
 	done
