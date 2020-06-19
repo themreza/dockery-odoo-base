@@ -1,8 +1,8 @@
 # use with https://github.com/casey/just
 
 
-# regenerate dockerfiles
-regenerate:
+# generate dockerfiles
+generate:
 	#!/bin/bash
 
 	# Generates base images docker contexts.
@@ -32,8 +32,8 @@ regenerate:
 	done
 
 
-# regenerate dockerfile & build images
-build IMAGE="odooops/dockery-odoo-base": regenerate
+# generate dockerfile & build images
+build IMAGE="odooops/dockery-odoo-base": generate
 	#!/bin/bash
 
 	# Generates base images per version.
@@ -48,7 +48,7 @@ build IMAGE="odooops/dockery-odoo-base": regenerate
 	done
 
 
-# regenerate dockeriles, build & push images
+# generate dockeriles, build & push images
 push IMAGE="odooops/dockery-odoo-base": build
 	#!/bin/bash
 
