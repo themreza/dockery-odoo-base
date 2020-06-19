@@ -33,7 +33,7 @@ regenerate:
 
 
 # regenerate dockerfile & build images
-build IMAGE="xoelabs/dockery-odoo-base": regenerate
+build IMAGE="odooops/dockery-odoo-base": regenerate
 	#!/bin/bash
 
 	# Generates base images per version.
@@ -49,7 +49,7 @@ build IMAGE="xoelabs/dockery-odoo-base": regenerate
 
 
 # regenerate dockeriles, build & push images
-push IMAGE="xoelabs/dockery-odoo-base": build
+push IMAGE="odooops/dockery-odoo-base": build
 	#!/bin/bash
 
 	# Pushes base images per version.

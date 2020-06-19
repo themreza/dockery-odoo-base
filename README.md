@@ -53,8 +53,8 @@ This is the env contract you must fulfill in your projects.
 
 Please visit, for more information:
 
-- https://github.com/xoe-labs/dockery-odoo
-- https://xoe-labs.github.io/dockery-odoo/
+- https://github.com/OdooOps/dockery-odoo
+- https://odooops.github.io/dockery-odoo/
 
 
 ## See also:
