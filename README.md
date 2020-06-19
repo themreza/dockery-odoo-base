@@ -11,7 +11,7 @@ file a PR.
 ## Features
 
 - Minimal (you'll love that one!)
-- Startup Greater (know your environment)
+- Startup Greeter (know your environment)
 - Postgres connection waiter loop (so startup doesn't fail)
 - `get_addons` auto-addons path (making your module dev a little more agile)
 - Tiny pyflame binary for live profiling (1.5MB)
