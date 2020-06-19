@@ -100,10 +100,9 @@ RUN set -ex; \
     rm -rf /var/lib/apt/lists/*;
 
 # Build-time env
-ENV ODOO_BCKP_DIR="/var/lib/odoo-backups" \
-    ODOO_PRST_DIR="/var/lib/odoo-persist" \
-    APP_UID="9001" \
-    APP_GID="9001" \
+ENV ODOO_PRST_DIR="/var/lib/odoo-persist" \
+    APP_UID="1001" \
+    APP_GID="1001" \
     ODOO_VERSION=master
 
 
@@ -179,16 +178,6 @@ RUN set -ex; \
     apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
     rm -rf /var/lib/apt/lists/*;
 
-# Grab latest json logger    //-- for easier parsing (Patch 0001)
-RUN pip --quiet --quiet install --no-cache-dir python-json-logger; \
-	find /usr/local -depth \
-		\( \
-			\( -type d -a \( -name test -o -name tests \) \) \
-			-o \
-			\( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
-		\) -exec rm -rf '{}' +;
-
-
 # Copy from build env
 COPY . /
 RUN /bin/bash -c 'shopt -s dotglob \
@@ -199,10 +188,10 @@ RUN /bin/bash -c 'shopt -s dotglob \
  && shopt -u dotglob'
 
 # Create app user & folders
-RUN addgroup --system --gid $APP_UID odoo; \
-    adduser --system --uid $APP_GID --ingroup odoo --home /opt/odoo --disabled-login --shell /sbin/nologin odoo; \
-    mkdir -p "${ODOO_PRST_DIR}" "${ODOO_BCKP_DIR}"; \
-    chown -R odoo:odoo "${ODOO_PRST_DIR}" "${ODOO_BCKP_DIR}"; \
+RUN addgroup --system --gid ${APP_UID} odoo; \
+    adduser --system --uid ${APP_GID} --ingroup odoo --home /opt/odoo --disabled-login --shell /sbin/nologin odoo; \
+    mkdir -p "${ODOO_PRST_DIR}"; \
+    chown -R odoo:odoo "${ODOO_PRST_DIR}"; \
     rm /var/log/faillog var/log/lastlog;
 
 # Fix locale                 //-- for some tests that depend on locale (babel python-lib)
@@ -215,7 +204,7 @@ ENV LANG=en_US.UTF-8 \
     LC_ALL=en_US.UTF-8
 
 ENTRYPOINT ["/entrypoint.sh"]
-VOLUME ["${ODOO_PRST_DIR}", "${ODOO_BCKP_DIR}"]
+VOLUME ["${ODOO_PRST_DIR}"]
 
 USER odoo
 

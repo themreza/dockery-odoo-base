@@ -1,6 +1,12 @@
 Changes
 =======
-
+2.0.0-rc0   (2020-06-18)
+------------------------
+- use `justfile` as task runner
+- remove adminpassword _file_ support
+- cleanup prelude
+- improve readme
+- remove unused backup dir
 
 1.0.0   (2018-12-05)
 --------------------

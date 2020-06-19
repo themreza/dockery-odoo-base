@@ -26,23 +26,32 @@ function sourceScriptsInFolder {
 	echo -e "\n\n"
 }
 
-# Implemented command options
+# If no command supllied, set `run`
 if [ "$#" -eq 0 ] || [ "${1:0:1}" = '-' ]; then
 	set -- run "$@"
 fi
 
 CMD=( "$@" )
 
+# Hint: you also can extend the entrypoint with new creative commands by placing
+# scripts in this folder within the container.
+# Just catch the $1 argument and set `CMD` array - it's sourced, not called.
 sourceScriptsInFolder "/entrypoint.d" "$@"
 
-# Create command
 
+# Standard commands
 if [ "$1" = 'run' ]; then
 	sourceScriptsInFolder "/entrypoint.db.d"
 	CMD=(
 			"${ODOO_CMD}"
 			"--addons-path"
 			"${ODOO_ADDONS_PATH}"
+			"--data-dir"
+			"${ODOO_PRST_DIR}"
+			"--config"
+			"${ODOO_RC}"
+			"--pg_path"
+			"$(which psql)"
 			"${CMD[@]:1}"
 		)
 fi
@@ -54,6 +63,12 @@ if [ "$1" = 'gevent' ]; then
 			"gevent"
 			"--addons-path"
 			"${ODOO_ADDONS_PATH}"
+			"--data-dir"
+			"${ODOO_PRST_DIR}"
+			"--config"
+			"${ODOO_RC}"
+			"--pg_path"
+			"$(which psql)"
 			"${CMD[@]:1}"
 		)
 fi
@@ -65,6 +80,13 @@ if [ "$1" = 'shell' ]; then
 			"shell"
 			"--addons-path"
 			"${ODOO_ADDONS_PATH}"
+			"--data-dir"
+			"${ODOO_PRST_DIR}"
+			"--config"
+			"${ODOO_RC}"
+			"--pg_path"
+			"$(which psql)"
+			"--no-http"
 			"${CMD[@]:1}"
 		)
 fi

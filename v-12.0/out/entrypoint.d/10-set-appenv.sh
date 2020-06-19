@@ -6,8 +6,6 @@
 
 set -Eeuo pipefail
 
-export ODOO_ADMINPASSWORD_FILE="${ODOO_ADMINPASSWORD_FILE:=/run/secrets/adminpwd}"  # Odoo Passfile (Patch tools/0002)
-
 addonspath=""
 # Sort reverse alfanumerically first, then do realpath
 # so we can freely reorder loading by symlinking for

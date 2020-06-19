@@ -19,6 +19,7 @@ WHITE=$'\033[01;37m'
 
 NC=$'\033[0m' # No Color
 
+# Dockery Odoo ANSII Art
 text="$(echo $'''
 H4sIAJ1D0lsAA4WP0Q3EIAxD/zOFB0DKAh0FKYt0+LPPXJr7apBMgi3gAUCxMKsqqMkd26a0Ellj
 dBMKeikuVTApY9QKiYej3NbFDs78nPAzuVt5fNd9On6N3dKFL/W9Z8QeUBM61JjmcyzabbZBiB1t
@@ -35,6 +36,10 @@ ${LPURPLE}   Join here:    https://t.me/joinchat/ILnVJw7s3ZvKL3mI7AACsw${NC}
 
 """
 
+files=($(grep -lR "${ODOO_RC}" -e '^admin_passwd' || true))
+if [ "${files[@]}" ]; then
+    ADMIN_PASSWD=$(awk -F "=" '/admin_passwd/ {print $2}' ${files[-1]} | tr -d ' '); fi
+
 echo -en """
 
 
@@ -50,18 +55,14 @@ ${LYELLOW}| ---------------------------- Files & Folders${NC}
 ${LYELLOW}| App Basepath:     ${ODOO_BASEPATH}${NC}
 ${LYELLOW}| App Cmd:          ${ODOO_CMD}${NC}
 ${LYELLOW}| Framework Path:   ${ODOO_FRM}${NC}
-${LYELLOW}| Backup Dir:       ${ODOO_BCKP_DIR}${NC}
 ${LYELLOW}| Peristence Dir:   ${ODOO_PRST_DIR}${NC}
 ${LYELLOW}| Addons Basepath:  ${ODOO_VENDOR}${NC}
 ${LYELLOW}| Addons Path:      ...see sourcing logs above${NC}
-${LYELLOW}| Migration Spec:   ${ODOO_MIG}${NC}
-${LYELLOW}| Config Folder:    ${ODOO_RC}${NC}
+${LYELLOW}| Config File:      ${ODOO_RC}${NC}
 ${LYELLOW}| -------------------------------- Environment${NC}
-${LYELLOW}| App UID:          ${APP_UID}${NC}
-${LYELLOW}| App GID:          ${APP_GID}${NC}
-${LYELLOW}| Current UID:      $(id -u)${NC}
-${LYELLOW}| Current GID:      $(id -g)${NC}
-${LYELLOW}| Serverpwd:        $(cat "${ODOO_ADMINPASSWORD_FILE:="."}" || true)${NC}
+${LYELLOW}| UID:              $(id -u)${NC}
+${LYELLOW}| GID:              $(id -g)${NC}
+${LYELLOW}| Serverpwd:        ${ADMIN_PASSWD:="admin"}${NC}
 ${LYELLOW}==============================================${NC}
 
 
