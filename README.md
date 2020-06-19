@@ -49,15 +49,36 @@ This is the env contract you must fulfill in your projects.
 - `ODOO_VENDOR` -> path to vendored code for your project, such as odoo itself
 - `ODOO_SRC` -> path to the project's own source code
 
+## Code Generators
 
+**tl;dr**: only ever modify `_spec-*`, then run `just regenerate`; commit both actions separatly.
 
-Please visit, for more information:
+- Specfifications are merged into target folders.
+- The in the target folder, `Dockerfiles.##.tmpl` are sorted, merged into `Dockerfile` & finally removed.
+
+This repo uses code generators, because:
+- they ease maintenance
+- they reduce errors
+- they present complete and self-contained build specifications to the reader
+
+---
+
+## Further Information:
 
 - https://github.com/OdooOps/dockery-odoo
 - https://odooops.github.io/dockery-odoo/
-
 
 ## See also:
 
 - [Changelog](./CHANGELOG.md)
 - [Code of Conduct](./CODE_OF_CONDUCT.md)
+
+# Credits & License
+
+Based on stewardship and contributions by:
+ - [@blaggacao](https://github.com/blaggacao)
+ - [@ygol](https://github.com/ygol)
+ - [@theangryangel](https://github.com/theangryangel)
+ - [@ychirino](https://github.com/ychirino)
+
+License: [LGPL-3](https://www.gnu.org/licenses/lgpl-3.0.en.html)
