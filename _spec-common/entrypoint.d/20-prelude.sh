@@ -31,7 +31,7 @@ echo -en "${text}"
 echo -en """
 
 ${LPURPLE}Questions, bugs or feature requests?${NC}
-${LPURPLE}   Submit here:  https://github.com/xoe-labs/dockery-odoo${NC}
+${LPURPLE}   Submit here:  https://github.com/OdooOps/dockery-odoo${NC}
 ${LPURPLE}   Join here:    https://t.me/joinchat/ILnVJw7s3ZvKL3mI7AACsw${NC}
 
 """
